@@ -1,0 +1,34 @@
+workflows:
+    native-android:
+        name: Native Android
+        max_build_duration: 120
+        environment:
+           groups:
+                - gcloud_credentials
+        triggering:
+            events:
+                - push
+            branch_patterns:
+                - pattern: master
+                  include: true
+                  source: true
+        artifacts:
+            - app/build/outputs/**/*.apk
+        scripts:
+            - name: gcp instance connection
+              script: |
+                set -ex
+                echo $JSON_KEY > ./gcloud_key_file.json
+                gcloud auth activate-service-account --key-file=gcloud_key_file.json
+                gcloud config set project $GCLOUD_PROJECT
+                #!/usr/bin/env zsh
+                echo "Find build artifacts"
+                apkPath=gcloud_key_file.json
+                if [[ -z ${apkPath} ]]
+                then
+                    echo "No apks were found"
+                    exit 1
+                else
+                    gcloud compute scp $apkPath geethukn@magnifi-mobile-vm:~ --zone "us-central1-b"
+                    gcloud beta compute ssh --ssh-flag="-T" --zone "us-central1-b" "geethukn@magnifi-mobile-vm" -- "cd ~/new-clone/magnifi-mobile-test && ./test.sh"
+                fi
