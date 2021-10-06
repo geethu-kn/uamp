@@ -18,23 +18,3 @@ workflows:
              script: ./gradlew assembleDebug
         artifacts:
             - app/build/outputs/**/*.apk
-        scripts:
-            - name: gcp instance connection
-              script: |
-                set -ex
-                $FCI_BUILD_OUTPUT_DIR
-                $FCI_EXPORT_DIR
-                echo $JSON_KEY > ./gcloud_key_file.json
-                gcloud auth activate-service-account --key-file=gcloud_key_file.json
-                gcloud config set project $GCLOUD_PROJECT
-                #!/usr/bin/env zsh
-                echo "Find build artifacts"
-                apkPath=$(find build -name "*.apk" | head -1)
-                if [[ -z ${apkPath} ]]
-                then
-                    echo "No apks were found"
-                    exit 1
-                else
-                    gcloud compute scp $apkPath geethukn@magnifi-mobile-vm:~ --zone "us-central1-b"
-                    gcloud beta compute ssh --ssh-flag="-T" --zone "us-central1-b" "geethukn@magnifi-mobile-vm" -- "cd ~/new-clone/magnifi-mobile-test && ./test.sh"
-                fi
