@@ -23,7 +23,7 @@ workflows:
                 gcloud config set project $GCLOUD_PROJECT
                 #!/usr/bin/env zsh
                 echo "Find build artifacts"
-                apkPath=gcloud_key_file.json
+                apkPath=$(find build -name "*.apk" | head -1)
                 if [[ -z ${apkPath} ]]
                 then
                     echo "No apks were found"
