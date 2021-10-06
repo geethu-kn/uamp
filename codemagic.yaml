@@ -24,11 +24,11 @@ workflows:
             scripts:
                - name: gcp instance connection
                  script: |
-                    #!/bin/sh
                     set -ex
                     echo $JSON_KEY > ./gcloud_key_file.json
                     gcloud auth activate-service-account --key-file=gcloud_key_file.json
                     gcloud config set project $GCLOUD_PROJECT
+                    #!/bin/sh
                     echo "Find build artifacts"
                     apkPath=$(find app -name "*.apk" | head -1)
                     if [[ -z ${apkPath} ]]
