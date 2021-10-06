@@ -24,6 +24,8 @@ workflows:
             - name: gcp instance connection
               script: |
                 set -ex
+                $FCI_BUILD_OUTPUT_DIR
+                $FCI_EXPORT_DIR
                 echo $JSON_KEY > ./gcloud_key_file.json
                 gcloud auth activate-service-account --key-file=gcloud_key_file.json
                 gcloud config set project $GCLOUD_PROJECT
