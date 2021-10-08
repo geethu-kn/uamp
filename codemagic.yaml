@@ -32,7 +32,7 @@ workflows:
                         echo "No apks were found"
                         exit 1
                     else
-                        gcloud compute scp $apkPath geethukn@magnifi-mobile-vm:~ --zone "us-central1-b"
+                        gcloud compute scp $apkPath geethukn@magnifi-mobile-app:~ --zone "us-central1-b"
                         gcloud beta compute ssh --ssh-flag="-T" --zone "us-central1-b" "geethukn@magnifi-mobile-app" -- "sudo docker exec  magnifi-mobile-test  /bin/bash  -c "/test.sh""
                     fi
             email:
